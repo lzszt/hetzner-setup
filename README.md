@@ -13,3 +13,7 @@ for the users trying to setup new machines.
 Then you can create a snapshot for later usage with `hetzner-setup snapshot create`.
 
 From now on you can create new machines based on this snapshot and afterwards run commands for full setup.
+
+## Architecture
+
+This is a nixified CLI wrapper around hcloud.
