@@ -16,6 +16,13 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
+        packages = {
+          default = self.packages.${system}.hetzner-setup;
+          hetzner-setup = pkgs.writeShellScriptBin "hetzner-setup" ''
+            echo welcome to hetzner setup
+          '';
+        };
+
         devShells.default = pkgs.mkShell {
           buildInputs = [ pkgs.hcloud ];
         };
