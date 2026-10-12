@@ -18,13 +18,14 @@
       {
         packages = {
           default = self.packages.${system}.hetzner-setup;
-          hetzner-setup = pkgs.writeShellScriptBin "hetzner-setup" ''
-            echo welcome to hetzner setup
-          '';
+          hetzner-setup = import ./hetzner-setup.nix { inherit pkgs; };
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = [ pkgs.hcloud ];
+          buildInputs = [
+            pkgs.hcloud
+            self.packages.${system}.hetzner-setup
+          ];
         };
       }
     );

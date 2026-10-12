@@ -1,6 +1,6 @@
 # Commands
 
-Create a new snapshot of a running VM with
+Create a new snapshot of an existing VM with
 
     hcloud server create-image --type snapshot --description <snapshot-name> <vm-name>
 
@@ -18,4 +18,4 @@ Create a new VM from a snapshot
 
 Protect the new VM
 
-    hcloud server enable-protection <vm-name>
+    hcloud server enable-protection <vm-name> delete
