@@ -1,0 +1,72 @@
+#compdef hetzner-setup
+
+# Zsh completions for hetzner-setup
+
+_hetzner_setup_snapshots() {
+    local -a snapshots
+    snapshots=(${(f)"$(hcloud image list --type snapshot -o noheader -o columns=id,description 2>/dev/null)"})
+    _describe 'snapshot' snapshots
+}
+
+_hetzner_setup_server_types() {
+    local -a types
+    types=(${(f)"$(hcloud server-type list -o noheader -o columns=name 2>/dev/null)"})
+    _describe 'server type' types
+}
+
+_hetzner_setup_locations() {
+    local -a locations
+    locations=(${(f)"$(hcloud location list -o noheader -o columns=name 2>/dev/null)"})
+    _describe 'location' locations
+}
+
+_hetzner_setup_servers() {
+    local -a servers
+    servers=(${(f)"$(hcloud server list -o noheader -o columns=name 2>/dev/null)"})
+    _describe 'server' servers
+}
+
+_hetzner_setup() {
+    local -a global_flags
+    global_flags=(
+        '--config[Path to hcloud config file]:config file:_files'
+        '--context[hcloud context to use]:context:'
+    )
+
+    _arguments -C \
+        $global_flags \
+        '1:command:(snapshot create)' \
+        '*::arg:->args'
+
+    case $state in
+        args)
+            case $words[1] in
+                snapshot)
+                    _arguments -C \
+                        '1:subcommand:(list create)' \
+                        '*::arg:->snapshot_args'
+                    case $state in
+                        snapshot_args)
+                            case $words[1] in
+                                create)
+                                    _arguments \
+                                        '(-s --snapshot-name)'{-s,--snapshot-name}'[Name for the snapshot]:name:' \
+                                        '(-n --vm-name)'{-n,--vm-name}'[VM to snapshot]:vm:_hetzner_setup_servers'
+                                    ;;
+                            esac
+                            ;;
+                    esac
+                    ;;
+                create)
+                    _arguments \
+                        '(-s --snapshot)'{-s,--snapshot}'[Snapshot to use]:snapshot:_hetzner_setup_snapshots' \
+                        '(-n --server)'{-n,--server}'[Server name]:name:' \
+                        '(-t --server-type)'{-t,--server-type}'[Server type]:type:_hetzner_setup_server_types' \
+                        '(-l --location)'{-l,--location}'[Server location]:location:_hetzner_setup_locations'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_hetzner_setup "$@"
